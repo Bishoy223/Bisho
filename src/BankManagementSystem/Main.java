@@ -1,135 +1,214 @@
-package BankManagementSystem;
-
-import java.util.Scanner;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        SystemManager systemManager = new SystemManager();
-        Admin admin = new Admin();
+        ArrayList<Client> clients = new ArrayList<>(); // List to store multiple clients
 
         while (true) {
-            System.out.println("\n--- Bank Management System ---");
-            System.out.println("1. Add Employee");
-            System.out.println("2. Add Client");
-            System.out.println("3. View All Employees");
-            System.out.println("4. View All Clients");
-            System.out.println("5. Edit Employee");
-            System.out.println("6. Edit Client");
-            System.out.println("7. Create Transaction");
-            System.out.println("8. View Transactions by Date");
-            System.out.println("9. View Transactions by Client");
-            System.out.println("10. View Transactions by Employee");
-            System.out.println("11. Exit");
-            System.out.print("Enter your choice: ");
-
+            System.out.println("\n--- Banking System ---");
+            System.out.println("1. Add New Client");
+            System.out.println("2. Display All Clients' Details");
+            System.out.println("3. Edit Personal Information for a Client");
+            System.out.println("4. Perform Operations on a Client's Account");
+            System.out.println("5. Delete Client");
+            System.out.println("6. Exit");
+            System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
 
             switch (choice) {
                 case 1:
-                    // Add Employee
-                    Employee newEmployee = Employee.createEmployee();
-                    systemManager.addEmployee(newEmployee.id, newEmployee.getFirstName(),
-                            newEmployee.getLastName(), newEmployee.getAddress(), newEmployee.getPosition());
+                    // Add new client
+                    System.out.print("Enter first name: ");
+                    String firstName = scanner.next();
+
+                    System.out.print("Enter last name: ");
+                    String lastName = scanner.next();
+
+                    System.out.print("Enter username: ");
+                    String username = scanner.next();
+
+                    System.out.print("Enter ID: ");
+                    String ID = scanner.next();
+
+                    System.out.print("Enter telephone number: ");
+                    String telephoneNumber = scanner.next();
+
+                    System.out.print("Enter initial balance: ");
+                    double initialBalance = scanner.nextDouble();
+
+                    clients.add(new Client(firstName, lastName, username, ID, telephoneNumber, initialBalance));
+                    System.out.println("Client added successfully.");
                     break;
 
                 case 2:
-                    // Add Client
-                    Client newClient = Client.createClient();
-                    systemManager.clients.add(newClient);
-                    admin.addClient(newClient);
+                    // Display all clients
+                    if (clients.isEmpty()) {
+                        System.out.println("No clients found.");
+                    } else {
+                        System.out.println("--- Clients' Details ---");
+                        for (Client client : clients) {
+                            client.displayDetails();
+                            System.out.println();
+                        }
+                    }
                     break;
 
                 case 3:
-                    // View All Employees
-                    systemManager.displayEmployees();
+                    // Edit personal information for a specific client
+                    System.out.print("Enter the ID of the client to edit: ");
+                    String editID = scanner.next();
+                    Client clientToEdit = findClientByID(clients, editID);
+
+                    if (clientToEdit != null) {
+                        System.out.print("Enter new first name: ");
+                        String newFirstName = scanner.next();
+                        clientToEdit.setFirstName(newFirstName);
+
+                        System.out.print("Enter new last name: ");
+                        String newLastName = scanner.next();
+                        clientToEdit.setLastName(newLastName);
+
+                        System.out.print("Enter new username: ");
+                        String newUsername = scanner.next();
+                        clientToEdit.setUsername(newUsername);
+
+                        System.out.print("Enter new telephone number: ");
+                        String newTelephoneNumber = scanner.next();
+                        clientToEdit.setTelephoneNumber(newTelephoneNumber);
+
+                        System.out.println("Client information updated successfully.");
+                    } else {
+                        System.out.println("Client with ID " + editID + " not found.");
+                    }
                     break;
 
                 case 4:
-                    // View All Clients
-                    admin.displayAllClients();
+                    // Perform operations on a specific client's account
+                    System.out.print("Enter the ID of the client: ");
+                    String clientID = scanner.next();
+                    Client targetClient = findClientByID(clients, clientID);
+
+                    if (targetClient != null) {
+                        performAccountOperations(scanner, targetClient, clients);
+                    } else {
+                        System.out.println("Client with ID " + clientID + " not found.");
+                    }
                     break;
 
                 case 5:
-                    // Edit Employee
-                    System.out.print("Enter employee name to edit: ");
-                    String employeeName = scanner.nextLine();
-                    System.out.print("Enter new address (or press Enter to skip): ");
-                    String newAddress = scanner.nextLine();
-                    System.out.print("Enter new position (or press Enter to skip): ");
-                    String newPosition = scanner.nextLine();
-                    systemManager.editEmployee(employeeName, newAddress, newPosition);
+                    // Delete client
+                    System.out.print("Enter the ID of the client to delete: ");
+                    String deleteID = scanner.next();
+                    if (deleteClient(clients, deleteID)) {
+                        System.out.println("Client account deleted successfully.");
+                    } else {
+                        System.out.println("Client with ID " + deleteID + " not found.");
+                    }
                     break;
 
                 case 6:
-                    // Edit Client
-                    System.out.print("Enter client account number: ");
-                    int accountNumber = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline
-                    System.out.print("Enter new telephone number: ");
-                    String newTelephone = scanner.nextLine();
-                    systemManager.editClient(accountNumber, newTelephone);
+                    // Exit the application
+                    System.out.println("Exiting system. Goodbye!");
+                    scanner.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice. Try again.");
+            }
+        }
+    }
+
+    // Helper method to find a client by ID
+    private static Client findClientByID(ArrayList<Client> clients, String ID) {
+        for (Client client : clients) {
+            if (client.getID().equals(ID)) {
+                return client;
+            }
+        }
+        return null;
+    }
+
+    // Helper method to delete a client by ID
+    private static boolean deleteClient(ArrayList<Client> clients, String ID) {
+        for (Client client : clients) {
+            if (client.getID().equals(ID)) {
+                clients.remove(client);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Method to perform account operations for a specific client
+    private static void performAccountOperations(Scanner scanner, Client client, ArrayList<Client> clients) {
+        while (true) {
+            System.out.println("\n--- Account Operations for " + client.getUsername() + " ---");
+            System.out.println("1. Display Account Details");
+            System.out.println("2. Transfer Money");
+            System.out.println("3. Request Credit Card");
+            System.out.println("4. Pay with Credit Card");
+            System.out.println("5. Disable Credit Card");
+            System.out.println("6. Deposit Money");
+            System.out.println("7. Show Transaction History");
+            System.out.println("8. Back to Main Menu");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    client.displayDetails();
+                    break;
+
+                case 2:
+                    System.out.print("Enter the ID of the client you want to transfer money to: ");
+                    String targetClientID = scanner.next();
+                    Client targetClient = findClientByID(clients, targetClientID);
+
+                    if (targetClient != null) {
+                        System.out.print("Enter the amount to transfer: ");
+                        double amount = scanner.nextDouble();
+                        if (client.getAccountNumber().transfer(amount, targetClient.getAccountNumber())) {
+                            System.out.println("Transferred " + amount + " to " + targetClient.getUsername() + " successfully.");
+                        } else {
+                            System.out.println("Transfer failed. Insufficient balance.");
+                        }
+                    } else {
+                        System.out.println("Client with ID " + targetClientID + " not found.");
+                    }
+                    break;
+
+                case 3:
+                    client.getAccountNumber().requestCreditCard();
+                    break;
+
+                case 4:
+                    System.out.print("Enter payment amount: ");
+                    double payment = scanner.nextDouble();
+                    client.getAccountNumber().payWithCreditCard(payment);
+                    break;
+
+                case 5:
+                    client.getAccountNumber().disableCreditCard();
+                    break;
+
+                case 6:
+                    System.out.print("Enter deposit amount: ");
+                    double deposit = scanner.nextDouble();
+                    client.getAccountNumber().deposit(deposit);
                     break;
 
                 case 7:
-                    // Create Transaction
-                    if (systemManager.clients.isEmpty() || systemManager.employees.isEmpty()) {
-                        System.out.println("Ensure both clients and employees exist to create a transaction.");
-                    } else {
-                        Transaction transaction = Transaction.createTransaction(systemManager.clients, systemManager.employees);
-                        admin.addTransaction(transaction);
-                        System.out.println("Transaction successfully created.");
-                    }
+                    client.getAccountNumber().displayTransactionHistory();
                     break;
 
                 case 8:
-                    // View Transactions by Date
-                    System.out.print("Enter date (yyyy-mm-dd): ");
-                    String date = scanner.nextLine();
-                    admin.displayTransactionsByDate(date);
-                    break;
-
-                case 9:
-                    // View Transactions by Client
-                    System.out.print("Enter client first name: ");
-                    String clientFirstName = scanner.nextLine();
-                    Client client = systemManager.clients.stream()
-                            .filter(c -> c.getFirstName().equalsIgnoreCase(clientFirstName))
-                            .findFirst()
-                            .orElse(null);
-                    if (client != null) {
-                        admin.displayTransactionsByClient(client);
-                    } else {
-                        System.out.println("Client not found.");
-                    }
-                    break;
-
-                case 10:
-                    // View Transactions by Employee
-                    System.out.print("Enter employee first name: ");
-                    String employeeFirstName = scanner.nextLine();
-                    Employee employee = systemManager.employees.stream()
-                            .filter(e -> e.getFirstName().equalsIgnoreCase(employeeFirstName))
-                            .findFirst()
-                            .orElse(null);
-                    if (employee != null) {
-                        admin.displayTransactionsByEmployee(employee);
-                    } else {
-                        System.out.println("Employee not found.");
-                    }
-                    break;
-
-                case 11:
-                    // Exit
-                    System.out.println("Exiting the system. Goodbye!");
-                    scanner.close();
-                    System.exit(0);
+                    return;
 
                 default:
-                    System.out.println("Invalid choice. Please try again.");
+                    System.out.println("Invalid choice. Try again.");
             }
         }
     }
