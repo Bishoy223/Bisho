@@ -1,13 +1,9 @@
-package BankManagementSystem;
-
 import java.util.ArrayList;
 
 public class Account {
-    public  static String accountNumber;
-    private String type;
     private double balance;
     private CreditCard creditCard;
-    private ArrayList<String> transactionHistory;
+    private ArrayList<String> transactionHistory; // New attribute for transaction history
 
     public Account(double initialBalance) {
         this.balance = initialBalance;
@@ -54,7 +50,7 @@ public class Account {
 
     public void payWithCreditCard(double amount) {
         if (creditCard != null) {
-            if (creditCard.pay(amount)) {
+            if (creditCard.makePayment(amount)) {
                 addTransaction("Paid with credit card: " + amount);
                 System.out.println("Payment successful.");
             }
@@ -89,8 +85,7 @@ public class Account {
     }
 
     public void displayAccountDetails() {
-
+        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'displayAccountDetails'");
     }
 }
-
