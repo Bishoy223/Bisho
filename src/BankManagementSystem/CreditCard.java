@@ -1,8 +1,5 @@
-package BankManagementSystem;
-
-
 public class CreditCard {
-
+    
     private double limit;
     private double balance;
     private int loyaltyPoints;
@@ -13,7 +10,7 @@ public class CreditCard {
         this.loyaltyPoints = 0;
     }
 
-    public void makePayment(double amount) {
+    public boolean makePayment(double amount) {
         if (amount <= balance) {
             balance -= amount;
             loyaltyPoints += (int) (amount * 1); // 100 loyalty point per 100 LE
@@ -22,6 +19,7 @@ public class CreditCard {
         } else {
             System.out.println("Insufficient credit limit.");
         }
+                return true;
     }
 
     public void displayCreditCardDetails() {
@@ -30,9 +28,11 @@ public class CreditCard {
         System.out.println("Loyalty Points: " + loyaltyPoints);
     }
 
-    public boolean pay(double amount) {
-
-        throw new UnsupportedOperationException("Unimplemented method 'pay'");
+    public void pay(double amount) {
+        // TODO Auto-generated method stub
+        
     }
-}
 
+  
+        
+    }
