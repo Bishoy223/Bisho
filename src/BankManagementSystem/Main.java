@@ -213,3 +213,70 @@ public class Main {
         }
     }
 }
+
+ziaddddddddddddddddd main\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        SystemManager system = new SystemManager();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            try {
+                System.out.println("\nMenu:");
+                System.out.println("1. Add Employee");
+                System.out.println("2. Edit Employee Information");
+                System.out.println("3. Display Employees");
+                System.out.println("4. Exit");
+                System.out.print("Enter your choice: ");
+                int choice = Integer.parseInt(scanner.nextLine());
+
+                switch (choice) {
+                    case 1: // Add Employee
+                        System.out.print("Enter Employee First Name: ");
+                        String firstName = scanner.nextLine();
+                        System.out.print("Enter Employee Last Name: ");
+                        String lastName = scanner.nextLine();
+                        System.out.print("Enter Address: ");
+                        String empAddress = scanner.nextLine();
+                        System.out.print("Enter Position: ");
+                        String empPosition = scanner.nextLine();
+                        System.out.print("Enter College: ");
+                        String graduatedCollege = scanner.nextLine();
+                        System.out.print("Enter Year of Graduation: ");
+                        int yearOfGraduation = Integer.parseInt(scanner.nextLine());
+                        System.out.print("Enter Total Grade: ");
+                        String totalGrade = scanner.nextLine();
+                        system.addEmployee(firstName, lastName, empAddress, empPosition, graduatedCollege, yearOfGraduation, totalGrade);
+                        break;
+
+                    case 2: // Edit Employee Information
+                        System.out.print("Enter Employee ID to Edit: ");
+                        int empId = Integer.parseInt(scanner.nextLine());
+                        System.out.print("Enter New Address (leave blank to skip): ");
+                        String newAddress = scanner.nextLine();
+                        System.out.print("Enter New Position (leave blank to skip): ");
+                        String newPosition = scanner.nextLine();
+                        system.editEmployee(empId, newAddress, newPosition);
+                        break;
+
+                    case 3: // Display Employees
+                        system.displayEmployees();
+                        break;
+
+                    case 4: // Exit
+                        System.out.println("Exiting...");
+                        scanner.close();
+                        return;
+
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
+        }
+    }
+}
